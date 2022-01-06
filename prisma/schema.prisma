@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model AuthInfo {
+  id        Int      @id @default(autoincrement())
+  privider  Provider
+  token     String
+  userId    String   @unique @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("auth_info")
+}
+
+model User {
+  id              Int        @id @default(autoincrement())
+  name            String
+  profileImageUrl String     @map("profile_image_url")
+  email           String?
+  bio             String?
+  birthday        DateTime?
+  gender          Gender?
+  status          UserStatus @default(ACTIVATE)
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+
+  @@map("user")
+}
+
+model UserLog {
+  id          Int              @id @default(autoincrement())
+  userId      String
+  target      UserUpdateTarget
+  description String?          @db.VarChar(2000)
+  updatedBy   Int?             @map("updated_by")
+  createdAt   DateTime         @default(now()) @map("created_at")
+
+  @@map("user_log")
+}
+
+enum Provider {
+  GOOGLE
+  APPLE
+}
+
+enum UserStatus {
+  ACTIVATE
+  BLOCK
+  DORMANT
+  WITHDRAWAL
+}
+
+enum UserUpdateTarget {
+  PROFILE
+  STATUS
+}
+
+enum Gender {
+  DIVERSE
+  FEMALE
+  MALE
+}
