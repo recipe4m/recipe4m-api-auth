@@ -2,13 +2,13 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { PrismaService } from './prisma/prisma.service';
 import { ResponseTimeLoggerMiddleware } from './middlewares/reponse-time-logger.middleware';
+import { SystemModule } from './system/system.module';
 
 @Module({
-  imports: [],
+  imports: [SystemModule],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [AppService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
