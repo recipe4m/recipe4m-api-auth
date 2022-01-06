@@ -2,6 +2,8 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
 import { NestFactory } from '@nestjs/core';
+import { SwaggerTag } from './libs/swaggers/swagger-tag';
+import extraModels from './libs/swaggers/extra-models';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -17,10 +19,12 @@ async function bootstrap() {
       .setExternalDoc('JSON Specification', '/swagger-ui-json')
       .addBearerAuth();
 
+    Object.values(SwaggerTag).forEach((value) => documentBuilder.addTag(value));
+
     const config = documentBuilder.build();
 
     const document = SwaggerModule.createDocument(app, config, {
-      extraModels: [],
+      extraModels,
     });
 
     const swaggerPath = `${globalPrefix}/swagger-ui`;
