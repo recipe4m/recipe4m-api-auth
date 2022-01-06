@@ -28,6 +28,7 @@
     "@nestjs/platform-express": "^7.6.15",
     "@prisma/client": "^3.7.0",
     "reflect-metadata": "^0.1.13",
+    "response-time": "^2.3.2",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.6"
   },
