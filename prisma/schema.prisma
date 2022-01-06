@@ -12,10 +12,11 @@ datasource db {
 
 model AuthInfo {
   id        Int      @id @default(autoincrement())
-  privider  Provider
+  provider  Provider
   token     String
-  userId    String   @unique @map("user_id")
+  userId    Int      @unique @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id])
 
   @@map("auth_info")
 }
@@ -33,6 +34,7 @@ model User {
   updatedAt       DateTime   @updatedAt @map("updated_at")
 
   @@map("user")
+  AuthInfo AuthInfo[]
 }
 
 model UserLog {
