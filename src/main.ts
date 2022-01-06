@@ -16,7 +16,7 @@ async function bootstrap() {
       .setTitle('Recipe4m Auth API')
       .setDescription(`Recipe4m Auth API for ${process.env.NODE_ENV}`)
       .setVersion('1.0')
-      .setExternalDoc('JSON Specification', '/swagger-ui-json')
+      .setExternalDoc('JSON Specification', `/${globalPrefix}/swagger-ui-json`)
       .addBearerAuth();
 
     Object.values(SwaggerTag).forEach((value) => documentBuilder.addTag(value));
@@ -31,6 +31,6 @@ async function bootstrap() {
     SwaggerModule.setup(swaggerPath, app, document);
   }
 
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
