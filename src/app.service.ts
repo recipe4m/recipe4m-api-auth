@@ -5,15 +5,7 @@ import { PrismaService } from './prisma/prisma.service';
 export class AppService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getHello(): Promise<string> {
-    await this.prismaService.user.create({
-      data: {
-        name: 'testName',
-        profileImageUrl: 'TestProfileImageUrl',
-        email: 'Test@email.com',
-      },
-    });
-
-    return 'Hello World!';
+  healthy(): null {
+    return null;
   }
 }
