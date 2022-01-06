@@ -3,43 +3,45 @@
 
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["mongoDb"]
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
 model AuthInfo {
-  id String @id @default(dbgenerated()) @map("_id") @db.ObjectId
-  privider Provider
-  idToken String @map("id_token")
-  userId String @unique @map("user_id")
+  id        Int      @id @default(autoincrement())
+  privider  Provider
+  token     String
+  userId    String   @unique @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
 
   @@map("auth_info")
 }
 
 model User {
-  id String @id @default(dbgenerated()) @map("_id") @db.ObjectId
-  nickname String
-  profileImageUrl String
-  email String
-  status UserStatus @default(ACTIVATE)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id              Int        @id @default(autoincrement())
+  name            String
+  profileImageUrl String     @map("profile_image_url")
+  email           String?
+  bio             String?
+  birthday        DateTime?
+  gender          Gender?
+  status          UserStatus @default(ACTIVATE)
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
 
   @@map("user")
 }
 
 model UserLog {
-  id String @id @default(dbgenerated()) @map("_id") @db.ObjectId
-  userId String
-  target UserUpdateTarget
-  description String
-  updatedBy String 
-  createdAt DateTime @default(now()) @map("created_at")
+  id          Int              @id @default(autoincrement())
+  userId      String
+  target      UserUpdateTarget
+  description String?          @db.VarChar(2000)
+  updatedBy   Int?             @map("updated_by")
+  createdAt   DateTime         @default(now()) @map("created_at")
 
   @@map("user_log")
 }
@@ -59,4 +61,10 @@ enum UserStatus {
 enum UserUpdateTarget {
   PROFILE
   STATUS
+}
+
+enum Gender {
+  DIVERSE
+  FEMALE
+  MALE
 }
