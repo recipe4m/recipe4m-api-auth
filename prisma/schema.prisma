@@ -13,7 +13,7 @@ datasource db {
 model AuthInfo {
   id        Int      @id @default(autoincrement())
   provider  Provider
-  token     String
+  oAuthId   String   @map("o_auth_id")
   userId    Int      @unique @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
   user      User     @relation(fields: [userId], references: [id])
@@ -33,8 +33,8 @@ model User {
   createdAt       DateTime   @default(now()) @map("created_at")
   updatedAt       DateTime   @updatedAt @map("updated_at")
 
-  @@map("user")
   AuthInfo AuthInfo[]
+  @@map("user")
 }
 
 model UserLog {
@@ -46,6 +46,16 @@ model UserLog {
   createdAt   DateTime         @default(now()) @map("created_at")
 
   @@map("user_log")
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  isUsed    Boolean  @default(false) @map("is_used")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("refresh_token")
 }
 
 enum Provider {

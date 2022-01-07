@@ -13,6 +13,7 @@ import { RefreshDto } from './dto/refresh.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { SignOutDto } from './dto/sign-out.dto';
 import { SignUpDto } from './dto/sign-up.dto';
+import { TokenService } from './token.service';
 
 @Injectable()
 export class AuthService {
@@ -21,39 +22,86 @@ export class AuthService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly oAuthService: OAuthService,
+    private readonly tokenService: TokenService,
   ) {}
 
   async signIn(signInDto: SignInDto) {
-    const payload = await this.oAuthService.verifyToken(signInDto);
+    try {
+      const payload = await this.oAuthService.verifyToken(signInDto);
 
-    if (!payload) throw new BadRequestException();
+      if (!payload)
+        throw new BadRequestException(TokenService.ErrorInvalidToken);
 
-    const { user } = await this.prismaService.authInfo.findFirst({
-      select: { user: true },
-      where: { ...signInDto },
-      orderBy: { id: 'desc' },
-    });
+      const { user } = await this.prismaService.authInfo.findFirst({
+        select: { user: true },
+        where: { ...signInDto },
+        orderBy: { id: 'desc' },
+      });
 
-    if (!user) {
-      throw new NotFoundException(AuthService.ErrorNotFoundUser);
-    } else if (user.status === 'BLOCK') {
-      throw new ForbiddenException(HttpExceptionFilter.ErrorBlockStatus);
-    } else if (user.status === 'DORMANT') {
-      throw new ForbiddenException(HttpExceptionFilter.ErrorBlockStatus);
+      if (!user) {
+        throw new NotFoundException(AuthService.ErrorNotFoundUser);
+      } else if (user.status === 'BLOCK') {
+        throw new ForbiddenException(HttpExceptionFilter.ErrorBlockStatus);
+      } else if (user.status === 'DORMANT') {
+        throw new ForbiddenException(HttpExceptionFilter.ErrorBlockStatus);
+      }
+
+      return await this.tokenService.issueTokens({ userId: user.id });
+    } catch (error) {
+      throw error;
     }
-
-    return null;
   }
 
   async signUp(signUpDto: SignUpDto) {
     return null;
   }
 
-  async signOut(signOutDto: SignOutDto) {
-    return null;
+  async signOut({ refreshToken }: SignOutDto) {
+    try {
+      const { sub: id } = await this.tokenService.verify(refreshToken);
+
+      if (!id) throw new BadRequestException(TokenService.ErrorInvalidToken);
+
+      await this.tokenService.setDisableRefreshToken(id);
+
+      return null;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  async refresh(refreshDto: RefreshDto) {
-    return null;
+  async refresh({ refreshToken }: RefreshDto) {
+    try {
+      const { sub: id } = await this.tokenService.verify(refreshToken);
+
+      if (!id) throw new BadRequestException(TokenService.ErrorInvalidToken);
+
+      const { userId, isUsed } =
+        await this.prismaService.refreshToken.findUnique({
+          select: { userId: true, isUsed: true },
+          where: { id },
+        });
+
+      if (isUsed) throw new BadRequestException(TokenService.ErrorInvalidToken);
+
+      const user = await this.prismaService.user.findUnique({
+        where: { id: userId },
+      });
+
+      if (!user) {
+        throw new NotFoundException(AuthService.ErrorNotFoundUser);
+      } else if (user.status === 'BLOCK') {
+        throw new ForbiddenException(HttpExceptionFilter.ErrorBlockStatus);
+      } else if (user.status === 'DORMANT') {
+        throw new ForbiddenException(HttpExceptionFilter.ErrorDormantStatus);
+      }
+
+      return await this.tokenService.reissueTokens({
+        userId: user.id,
+        refreshTokenId: id,
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 }

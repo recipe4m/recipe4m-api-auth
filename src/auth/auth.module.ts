@@ -8,7 +8,7 @@ import { TokenService } from './token.service';
 
 export const DynamicJwtModule = JwtModule.register({
   signOptions: {
-    expiresIn: process.env.NODE_ENV === 'production' ? '30m' : '8h',
+    expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN,
   },
 });
 
