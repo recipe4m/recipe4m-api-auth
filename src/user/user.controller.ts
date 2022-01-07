@@ -10,13 +10,14 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SwaggerTag } from '@libs/swaggers/swagger-tag';
 import { JwtAuthGuard } from '@libs/guards/jwt-auth.guard';
 import { Request } from 'express';
 import { UserByAccessTokenDto } from '@auth/dto/user-by-access-token.dto';
 
 @ApiTags(SwaggerTag.User)
+@ApiBearerAuth()
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -33,7 +34,8 @@ export class UserController {
     return this.userService.findOneById(id);
   }
 
-  @Patch(':id')
+  @Patch()
+  @UseGuards(JwtAuthGuard)
   async updateOwnProfile(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,

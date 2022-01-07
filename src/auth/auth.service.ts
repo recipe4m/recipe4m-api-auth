@@ -41,15 +41,17 @@ export class AuthService {
       const { provider } = signInDto;
       const oAuthId = payload.sub;
 
-      const { user } = await this.prismaService.auth.findFirst({
+      const auth = await this.prismaService.auth.findFirst({
         select: { user: true },
         where: { provider, oAuthId },
         orderBy: { id: 'desc' },
       });
 
-      if (!user) {
-        throw new NotFoundException(AuthService.ErrorNotFoundUser);
-      } else if (user.status === 'BLOCK') {
+      if (!auth) throw new NotFoundException(AuthService.ErrorNotFoundUser);
+
+      const { user } = auth;
+
+      if (user.status === 'BLOCK') {
         throw new ForbiddenException(HttpExceptionFilter.ErrorBlockStatus);
       } else if (user.status === 'DORMANT') {
         throw new ForbiddenException(HttpExceptionFilter.ErrorBlockStatus);
