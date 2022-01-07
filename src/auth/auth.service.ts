@@ -17,6 +17,7 @@ import { SignInDto } from './dto/sign-in.dto';
 import { SignOutDto } from './dto/sign-out.dto';
 import { SignUpDto } from './dto/sign-up.dto';
 import { TokenService } from './token.service';
+import { TokensDto } from './dto/tokens.dto';
 
 @Injectable()
 export class AuthService {
@@ -31,7 +32,7 @@ export class AuthService {
     private readonly tokenService: TokenService,
   ) {}
 
-  async signIn(signInDto: SignInDto) {
+  async signIn(signInDto: SignInDto): Promise<TokensDto> {
     try {
       const payload = await this.oAuthService.verifyToken(signInDto);
 
@@ -95,7 +96,7 @@ export class AuthService {
     }
   }
 
-  async signOut({ refreshToken }: SignOutDto) {
+  async signOut({ refreshToken }: SignOutDto): Promise<null> {
     try {
       const { sub: id } = await this.tokenService.verify(refreshToken);
 
@@ -109,7 +110,7 @@ export class AuthService {
     }
   }
 
-  async refresh({ refreshToken }: RefreshDto) {
+  async refresh({ refreshToken }: RefreshDto): Promise<TokensDto> {
     try {
       const { sub: id } = await this.tokenService.verify(refreshToken);
 

@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '@prisma/prisma.service';
 import { RefreshTokenPayload } from './interfaces/refresh-token-payload';
 import { ReissueTokensParams } from './interfaces/reissue-tokens-params';
+import { TokensDto } from './dto/tokens.dto';
 
 @Injectable()
 export class TokenService implements OnModuleInit {
@@ -31,7 +32,7 @@ export class TokenService implements OnModuleInit {
     this.jwtSecret = process.env.JWT_SECRET;
   }
 
-  issueAccessToken({ userId }: IssueAccessTokenParams) {
+  issueAccessToken({ userId }: IssueAccessTokenParams): string {
     const payload: AccessTokenPayload = {
       iss: this.iss,
       aud: userId,
@@ -40,7 +41,9 @@ export class TokenService implements OnModuleInit {
     return this.jwtService.sign(payload, { secret: this.jwtSecret });
   }
 
-  async issueRefreshToken({ userId }: IssueRefreshTokenParams) {
+  async issueRefreshToken({
+    userId,
+  }: IssueRefreshTokenParams): Promise<string> {
     try {
       const { id } = await this.prismaService.refreshToken.create({
         select: { id: true },
@@ -61,18 +64,21 @@ export class TokenService implements OnModuleInit {
     }
   }
 
-  async issueTokens({ userId }: IssueTokensParams) {
+  async issueTokens({ userId }: IssueTokensParams): Promise<TokensDto> {
     try {
       return {
         accessToken: this.issueAccessToken({ userId }),
-        refresToken: await this.issueRefreshToken({ userId }),
+        refreshToken: await this.issueRefreshToken({ userId }),
       };
     } catch (error) {
       throw error;
     }
   }
 
-  async reissueTokens({ userId, refreshTokenId }: ReissueTokensParams) {
+  async reissueTokens({
+    userId,
+    refreshTokenId,
+  }: ReissueTokensParams): Promise<TokensDto> {
     try {
       await this.setDisableRefreshToken(refreshTokenId);
       return await this.issueTokens({ userId });
@@ -89,7 +95,7 @@ export class TokenService implements OnModuleInit {
     });
   }
 
-  async setDisableRefreshToken(id: number) {
+  async setDisableRefreshToken(id: number): Promise<void> {
     try {
       await this.prismaService.refreshToken.update({
         data: { isUsed: true },

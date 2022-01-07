@@ -1,3 +1,4 @@
+import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { GoogleOAuthService } from './google-o-auth.service';
 import { JwtModule } from '@nestjs/jwt';
@@ -15,6 +16,7 @@ export const DynamicJwtModule = JwtModule.register({
 
 @Module({
   imports: [DynamicJwtModule],
+  controllers: [AuthController],
   providers: [
     AuthService,
     PrismaService,
