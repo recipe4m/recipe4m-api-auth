@@ -1,6 +1,7 @@
 import { AuthService } from './auth.service';
 import { GoogleOAuthService } from './google-o-auth.service';
 import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from '@libs/strategies/jwt.strategy';
 import { Module } from '@nestjs/common';
 import { OAuthService } from './o-auth.service';
 import { PrismaService } from '@src/prisma/prisma.service';
@@ -20,6 +21,7 @@ export const DynamicJwtModule = JwtModule.register({
     OAuthService,
     GoogleOAuthService,
     TokenService,
+    JwtStrategy,
   ],
   exports: [AuthService],
 })
