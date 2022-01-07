@@ -8,7 +8,7 @@ import {
 
 import { ApiAlreadyRegisteredError } from '@http-exceptions/api-already-registered-error';
 import { ApiNotFoundError } from '@src/libs/http-exceptions/api-not-found-error';
-import { HttpExceptionFilter } from '@filters/http-exception.filter';
+import { HttpExceptionFilter } from '@libs/filters/http-exception.filter';
 import { OAuthService } from './o-auth.service';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '@src/prisma/prisma.service';

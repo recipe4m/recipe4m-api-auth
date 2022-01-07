@@ -7,7 +7,7 @@ export class UserService {
     return null;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  updateOwnProfile(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
 }
