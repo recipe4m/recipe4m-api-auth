@@ -2,12 +2,14 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "@src/*": ["./src/*"],
+      "@http-exceptions/*": ["./src/libs/http-exceptions/*"],
       "@libs/*": ["./src/libs/*"],
+      "@filters/*": ["./src/filters/*"],
       "@auth/*": ["./src/auth/*"],
       "@user/*": ["./src/user/*"],
       "@prisma/*": ["./src/prisma/*"],
-      "@middlewares/*": ["./src/middlewares"]
+      "@middlewares/*": ["./src/middlewares/*"],
+      "@src/*": ["./src/*"]
     }
   }
 }

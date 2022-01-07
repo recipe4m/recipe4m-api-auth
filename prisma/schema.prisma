@@ -10,14 +10,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model AuthInfo {
+model Auth {
   id        Int      @id @default(autoincrement())
-  privider  Provider
-  token     String
-  userId    String   @unique @map("user_id")
+  provider  Provider
+  oAuthId   String   @unique @map("o_auth_id")
+  userId    Int      @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id])
 
-  @@map("auth_info")
+  @@map("auth")
 }
 
 model User {
@@ -31,6 +32,7 @@ model User {
   status          UserStatus @default(ACTIVATE)
   createdAt       DateTime   @default(now()) @map("created_at")
   updatedAt       DateTime   @updatedAt @map("updated_at")
+  authInfo        Auth[]
 
   @@map("user")
 }
@@ -44,6 +46,16 @@ model UserLog {
   createdAt   DateTime         @default(now()) @map("created_at")
 
   @@map("user_log")
+}
+
+model RefreshToken {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  isUsed    Boolean  @default(false) @map("is_used")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("refresh_token")
 }
 
 enum Provider {
