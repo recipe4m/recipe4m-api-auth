@@ -3,15 +3,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ApiNotFoundError } from '@http-exceptions/api-not-found-error';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '@prisma/prisma.service';
+import { ProfileDto } from './dto/profile.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UserService {
-  static ErrorNotFound = new ApiNotFoundError('해당 유저를 찾을 수 없습니다.');
+  static ErrorNotFound = new ApiNotFoundError('유저를 찾을 수 없습니다.');
 
   constructor(private readonly prismaService: PrismaService) {}
 
-  async findOneById(id: number) {
+  async findOneById(id: number): Promise<ProfileDto> {
     try {
       const user = await this.prismaService.user.findUnique({
         select: {
@@ -34,7 +35,10 @@ export class UserService {
     }
   }
 
-  async updateOwnProfile(id: number, updateUserDto: UpdateUserDto) {
+  async updateOwnProfile(
+    id: number,
+    updateUserDto: UpdateUserDto,
+  ): Promise<ProfileDto> {
     try {
       return await this.prismaService.user.update({
         select: {
