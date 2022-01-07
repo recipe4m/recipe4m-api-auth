@@ -26,12 +26,12 @@ import { ApiPatchUserResData } from './schemas/api-patch-user-res-data.schema';
 import { HttpExceptionFilter } from '@libs/filters/http-exception.filter';
 
 @ApiTags(SwaggerTag.User)
-@ApiBearerAuth()
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ schema: { $ref: getSchemaPath(ApiGetUserResData) } })
   @HttpExceptionFilter.ErrorUnauthorized.response()
@@ -52,6 +52,7 @@ export class UserController {
   }
 
   @Patch()
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiOkResponse({ schema: { $ref: getSchemaPath(ApiPatchUserResData) } })
   @HttpExceptionFilter.ErrorUnauthorized.response()
