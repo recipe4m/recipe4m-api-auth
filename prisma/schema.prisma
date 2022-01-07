@@ -10,15 +10,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model AuthInfo {
+model Auth {
   id        Int      @id @default(autoincrement())
   provider  Provider
-  oAuthId   String   @map("o_auth_id")
-  userId    Int      @unique @map("user_id")
+  oAuthId   String   @unique @map("o_auth_id")
+  userId    Int      @map("user_id")
   createdAt DateTime @default(now()) @map("created_at")
   user      User     @relation(fields: [userId], references: [id])
 
-  @@map("auth_info")
+  @@map("auth")
 }
 
 model User {
@@ -32,7 +32,7 @@ model User {
   status          UserStatus @default(ACTIVATE)
   createdAt       DateTime   @default(now()) @map("created_at")
   updatedAt       DateTime   @updatedAt @map("updated_at")
-  authInfo        AuthInfo[]
+  authInfo        Auth[]
 
   @@map("user")
 }
