@@ -1,4 +1,4 @@
-export interface VerifyTokenArgs {
+export interface VerifyTokenParams {
   provider: 'GOOGLE' | 'APPLE';
   token: string;
 }
