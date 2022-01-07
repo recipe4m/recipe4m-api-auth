@@ -32,8 +32,8 @@ model User {
   status          UserStatus @default(ACTIVATE)
   createdAt       DateTime   @default(now()) @map("created_at")
   updatedAt       DateTime   @updatedAt @map("updated_at")
+  authInfo        AuthInfo[]
 
-  AuthInfo AuthInfo[]
   @@map("user")
 }
 
