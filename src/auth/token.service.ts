@@ -25,7 +25,7 @@ export class TokenService implements OnModuleInit {
 
   onModuleInit() {
     this.iss = process.env.ISS;
-    this.refreshTokenExpiresIn = process.env.REFRESH_EXPIRES_IN;
+    this.refreshTokenExpiresIn = process.env.REFRESH_TOKEN_EXPIRES_IN;
     this.jwtSecret = process.env.JWT_SECRET;
   }
 

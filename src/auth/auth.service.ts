@@ -78,14 +78,7 @@ export class AuthService {
         data: {
           name,
           profileImageUrl,
-          authInfo: {
-            create: [
-              {
-                provider,
-                oAuthId,
-              },
-            ],
-          },
+          authInfo: { create: [{ provider, oAuthId }] },
         },
       });
 
