@@ -1,5 +1,12 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
+import { ApiNotFoundError } from '@src/libs/http-exceptions/api-not-found-error';
+import { HttpExceptionFilter } from '@filters/http-exception.filter';
 import { OAuthService } from './o-auth.service';
 import { PrismaService } from '@src/prisma/prisma.service';
 import { RefreshDto } from './dto/refresh.dto';
@@ -9,6 +16,8 @@ import { SignUpDto } from './dto/sign-up.dto';
 
 @Injectable()
 export class AuthService {
+  static ErrorNotFoundUser = new ApiNotFoundError('사용자를 찾을 수 없습니다.');
+
   constructor(
     private readonly prismaService: PrismaService,
     private readonly oAuthService: OAuthService,
@@ -20,12 +29,18 @@ export class AuthService {
     if (!payload) throw new BadRequestException();
 
     const { user } = await this.prismaService.authInfo.findFirst({
+      select: { user: true },
       where: { ...signInDto },
       orderBy: { id: 'desc' },
-      include: {
-        user: true,
-      },
     });
+
+    if (!user) {
+      throw new NotFoundException(AuthService.ErrorNotFoundUser);
+    } else if (user.status === 'BLOCK') {
+      throw new ForbiddenException(HttpExceptionFilter.ErrorBlockStatus);
+    } else if (user.status === 'DORMANT') {
+      throw new ForbiddenException(HttpExceptionFilter.ErrorBlockStatus);
+    }
 
     return null;
   }

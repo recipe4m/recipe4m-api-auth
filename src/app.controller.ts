@@ -14,6 +14,7 @@ export class AppController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('sign-in')
+  @AuthService.ErrorNotFoundUser.response()
   async signIn(@Body() signInDto: SignInDto) {
     return this.authService.signIn(signInDto);
   }
