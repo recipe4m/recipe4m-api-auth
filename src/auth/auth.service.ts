@@ -8,7 +8,7 @@ import {
 
 import { ApiAlreadyRegisteredError } from '@http-exceptions/api-already-registered-error';
 import { ApiNotFoundError } from '@src/libs/http-exceptions/api-not-found-error';
-import { HttpExceptionFilter } from '@filters/http-exception.filter';
+import { HttpExceptionFilter } from '@libs/filters/http-exception.filter';
 import { OAuthService } from './o-auth.service';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '@src/prisma/prisma.service';
@@ -41,15 +41,17 @@ export class AuthService {
       const { provider } = signInDto;
       const oAuthId = payload.sub;
 
-      const { user } = await this.prismaService.authInfo.findFirst({
+      const auth = await this.prismaService.auth.findFirst({
         select: { user: true },
         where: { provider, oAuthId },
         orderBy: { id: 'desc' },
       });
 
-      if (!user) {
-        throw new NotFoundException(AuthService.ErrorNotFoundUser);
-      } else if (user.status === 'BLOCK') {
+      if (!auth) throw new NotFoundException(AuthService.ErrorNotFoundUser);
+
+      const { user } = auth;
+
+      if (user.status === 'BLOCK') {
         throw new ForbiddenException(HttpExceptionFilter.ErrorBlockStatus);
       } else if (user.status === 'DORMANT') {
         throw new ForbiddenException(HttpExceptionFilter.ErrorBlockStatus);

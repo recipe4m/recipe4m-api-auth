@@ -1,11 +1,13 @@
-import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 
+import { AccessTokenPayload } from './interfaces/access-token-payload.dto';
 import { ApiInvalidTokenError } from '@http-exceptions/api-invalid-token-error';
 import { IssueAccessTokenParams } from './interfaces/issue-access-token-params';
 import { IssueRefreshTokenParams } from './interfaces/issue-refresh-token-params';
 import { IssueTokensParams } from './interfaces/issue-tokens-params';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '@prisma/prisma.service';
+import { RefreshTokenPayload } from './interfaces/refresh-token-payload';
 import { ReissueTokensParams } from './interfaces/reissue-tokens-params';
 
 @Injectable()
@@ -30,7 +32,7 @@ export class TokenService implements OnModuleInit {
   }
 
   issueAccessToken({ userId }: IssueAccessTokenParams) {
-    const payload = {
+    const payload: AccessTokenPayload = {
       iss: this.iss,
       aud: userId,
     };
@@ -45,7 +47,7 @@ export class TokenService implements OnModuleInit {
         data: { userId },
       });
 
-      const payload = {
+      const payload: RefreshTokenPayload = {
         iss: this.iss,
         sub: id,
       };
