@@ -28,8 +28,8 @@ async function bootstrap() {
       extraModels,
     });
 
-    let swaggerPath = `swagger-ui`;
-    if (globalPrefix) swaggerPath = `${globalPrefix}/swagger-ui`;
+    let swaggerPath = `auth/swagger-ui`;
+    if (globalPrefix) swaggerPath = `${globalPrefix}/auth/swagger-ui`;
     SwaggerModule.setup(swaggerPath, app, document);
   }
 
