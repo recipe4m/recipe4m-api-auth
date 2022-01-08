@@ -7,7 +7,7 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('healthy')
+  @Get('auth/healthy')
   @ApiOkResponse({ type: String })
   healthy(): string {
     return this.appService.healthy();
