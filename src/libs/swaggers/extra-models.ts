@@ -8,12 +8,12 @@ import { ApiGetUserResData } from '@user/schemas/api-get-user-res-data.schema';
 import { ApiInvalidTokenError } from '@http-exceptions/api-invalid-token-error';
 import { ApiNoPermissionError } from '@http-exceptions/api-no-permission-error';
 import { ApiNotFoundError } from '@http-exceptions/api-not-found-error';
+import { ApiPatchAuthSignOutReqBody } from '@auth/schemas/api-patch-auth-sign-out-req-body.schema';
 import { ApiPatchUserResData } from '@user/schemas/api-patch-user-res-data.schema';
 import { ApiPostAuthRefreshReqBody } from '@auth/schemas/api-post-auth-refresh-req-body.schema';
 import { ApiPostAuthRefreshResData } from '@auth/schemas/api-post-auth-refresh-res-data.schema';
 import { ApiPostAuthSignInReqBody } from '@auth/schemas/api-post-auth-sign-in-req-body.schema';
 import { ApiPostAuthSignInResData } from '@auth/schemas/api-post-auth-sign-in-res-data.schema';
-import { ApiPostAuthSignOutReqBody } from '@auth/schemas/api-post-auth-sign-out-req-body.schema';
 import { ApiPostAuthSignUpReqBody } from '@auth/schemas/api-post-auth-sign-up-req-body.schema';
 import { ApiPostAuthSignUpResData } from '@auth/schemas/api-post-auth-sign-up-res-data.schema';
 import { ApiUnauthorizedError } from '@http-exceptions/api-unauthorized-error';
@@ -28,7 +28,7 @@ export default [
   ApiPostAuthSignUpResData,
   ApiPostAuthRefreshReqBody,
   ApiPostAuthRefreshResData,
-  ApiPostAuthSignOutReqBody,
+  ApiPatchAuthSignOutReqBody,
   /**
    * User
    */
